@@ -157,7 +157,17 @@ public class RigidTransform : MonoBehaviour {
 
         H.SVD(out U, out E, out V);
         R = V * U.Transpose();        
-
+        
+        //special reflection case
+        if(R.Determinant<0)
+            {
+                V.V02 = (-V.V02);
+                V.V12 = (-V.V12);
+                V.V22 = (-V.V22);
+                R = V * U.Transpose();
+                Debug.LogWarning("Reflection case");
+            }
+        
         Translation = NegativeMatrix(R) * centroidA + centroidB;
         //Debug.Log("Translation is" + Translation);
         TransformationMatrix = AccordToUnityMatrix(TransformationMatrix, R, Translation);
